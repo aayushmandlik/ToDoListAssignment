@@ -44,6 +44,7 @@ router.delete("/todos/:id", async (req, res) => {
 });
 
 // PUT /todos/:id - update both status and content
+// PUT /todos/:id - update both status and content
 router.put("/todos/:id", async (req, res) => {
   const collection = getCollection();
   const _id = new ObjectId(req.params.id);
@@ -71,7 +72,11 @@ router.put("/todos/:id", async (req, res) => {
     { $set: updateFields }
   );
 
-  res.status(200).json(updatedTodo);
+  if (updatedTodo.modifiedCount > 0) {
+    res.status(200).json({ acknowledged: true });
+  } else {
+    res.status(404).json({ mssg: "Todo not found or not modified" });
+  }
 });
 
 module.exports = router;

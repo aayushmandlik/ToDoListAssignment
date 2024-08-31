@@ -5,10 +5,11 @@ export default function Todo(props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(todo.todo);
 
-  const updateTodoStatus = async (todoId, todoStatus) => {
+  const updateTodoStatus = async (todoId, currentStatus) => {
+    const newStatus = !currentStatus; // Toggling the status
     const res = await fetch(`/api/todos/${todoId}`, {
       method: "PUT",
-      body: JSON.stringify({ status: todoStatus }),
+      body: JSON.stringify({ status: newStatus }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -19,7 +20,7 @@ export default function Todo(props) {
       setTodos((currentTodos) => {
         return currentTodos.map((currentTodo) => {
           if (currentTodo._id === todoId) {
-            return { ...currentTodo, status: !currentTodo.status };
+            return { ...currentTodo, status: newStatus };
           }
           return currentTodo;
         });
@@ -84,6 +85,7 @@ export default function Todo(props) {
         >
           {todo.status ? "☑" : "☐"}
         </button>
+
         <button className="todo__delete" onClick={() => deleteTodo(todo._id)}>
           🗑️
         </button>
